@@ -5,14 +5,33 @@
 
 #advanced {
     background-color: #e6f2ff;
+    border: 1px solid darkslateblue;
+    border-radius: 5px;
 }
 
 .item {
     display: inline-block;
     position: aboslute;
-    padding: 10px 20px 10px 20px;
+    padding: 10px 10px 10px 10px;
+}
+
+.hover_item {
+    display: inline-block;
+    position: aboslute;
+    padding: 5px 5px 5px 5px;
 }
 
 .margins {
     margin: 20px 20px 20px 20px;
+}
+
+.inputs {
+    background-color:#f2f2f2;
+    border: 1px solid darkslateblue;
+    border-radius: 5px;
+}
+
+.borders {
+    border: 5px solid #0080ff;
+    border-radius: 5px;
 }

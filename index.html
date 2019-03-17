@@ -7,21 +7,22 @@
 </head>
 
 <body>
-    <div class="margins">
-        <p>NASA Image Search by Gabriel Abrantes</p>
-    </div>
+    <div class="margins inputs">
+        <div class="margins">
+            <p>NASA Image Search by Gabriel Abrantes</p>
+        </div>
 
-    <div class="margins">
         <form onsubmit="return false">
             <!-- Basic Search Tools -->
-            <div class="form-inline">
+            <div class="form-inline margins">
                 <input type="text" class="form-control" id="search_q">
                 <button type="submit" class="btn btn-primary" id="search_btn">Search</button>
-                <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#advanced" aria-expanded="false" aria-controls="advanced">Tools</button>
+                <button type="button" class="btn btn-link" data-toggle="collapse" 
+                data-target="#advanced" aria-expanded="false" aria-controls="advanced">Advanced</button>
             </div>      
 
             <!-- Advanced Search Tools-->
-            <div class="collapse card" id="advanced">
+            <div class="collapse card margins" id="advanced">
                 <div class="card.body form-inline">
                     <div class="margins">
                         <label for="description">Description</label>
@@ -35,12 +36,12 @@
                     
                     <div class="margins">
                         <label for="year_start">Year Start</label>
-                        <input type="number" class="form-control" id="year_start">
+                        <input type="number" class="form-control" id="year_start" placeholder="YYYY">
                     </div>
 
                     <div class="margins">
                         <label for="year_end">Year End</label>
-                        <input type="number" class="form-control" id="year_end">
+                        <input type="number" class="form-control" id="year_end" placeholder="YYYY">
                     </div>
                 </div>                    
             </div>  

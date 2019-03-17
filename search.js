@@ -1,6 +1,7 @@
-var request = new XMLHttpRequest();
-var base = "https://images-api.nasa.gov/search?";
-var test_url = "https://images-api.nasa.gov/search?q=apollo%2011&description=moon%20landing&media_type=image";
+var search_request = new XMLHttpRequest();
+var metadata_request = new XMLHttpRequest();
+var base_search = "https://images-api.nasa.gov/search?";
+var base_metadata = " https://images-api.nasa.gov/metadata/";
 var url = "";
 var media_type = "&media_type=image"; // restrict results to images only
 var q, desc, loc, year_start, year_end = undefined; // search fields
@@ -38,7 +39,7 @@ $("#search_btn").click(function() {
 
     // build url
     if (q != '' && q != undefined) {
-        url = base + "q=" + q; 
+        url = base_search + "q=" + q; 
         
         if (desc != '' && desc != undefined) {
             url = url + "&description=" + desc;
@@ -57,22 +58,23 @@ $("#search_btn").click(function() {
     // send url request
     if (url != '') {
         url = url + media_type;
-        request.open("GET", url, true);
-        request.send();
+        search_request.open("GET", url, true);
+        search_request.send();
     }
 });
 
-// receive the request back
-request.onreadystatechange = function() {
-    if (request.readyState == 4 && request.status == 200) {
-        var jsonObj = JSON.parse(request.responseText);
+// receive the search request back
+search_request.onreadystatechange = function() {
+    if (search_request.readyState == 4 && search_request.status == 200) {
+        var jsonObj = JSON.parse(search_request.responseText);
         var length = jsonObj.collection.items.length;
 
         // appending the images
         for (var i = 0; i < length; ++i) {
             var img_src = jsonObj.collection.items[i].links[0].href;
+            var img_id = jsonObj.collection.items[i].data[0].nasa_id;
             var item = $("<span></span>");
-            var tag = '<img class="item" id = "image_' + i + '">';
+            var tag = '<img class="item" id = "' + img_id + '">';
             var image = $(tag);
             image.attr('src', img_src);
             image.width(25 + '%');
@@ -82,11 +84,46 @@ request.onreadystatechange = function() {
             
             // when image is clicked, reveal metadata
             $(image).on('click', function(){
-                var my_id = $(this).attr("id");
-                console.log("item click on ", my_id);
+                var id = $(this).attr("id");
+                
+                var url = base_metadata + id;
+                metadata_request.open("GET", url, true);
+                metadata_request.send();
+            });    
 
-                // REVEAL METADATA
-            })    
+            // when image is hovered
+            $(image).hover(function(){
+                $(this).addClass('borders');
+                $(this).addClass('hover_item');
+            }, function(){
+                $(this).removeClass('borders');
+                $(this).removeClass('hover_item');
+            }); 
         }
     }
 };
+
+// receive the metadata request back
+metadata_request.onreadystatechange = function() {
+    if (metadata_request.readyState == 4 && metadata_request.status == 200) {
+        var jsonObj = JSON.parse(metadata_request.responseText);
+        var location = jsonObj.location;
+        var id = getID(location);
+        // var text = JSON.parse(location);
+        // console.log("text = ", text);
+
+        var image = $("#" + id);
+        var par = $(image).parent();
+        var item = $("<p>Hello World</p>");
+        $(par).append(item);
+        console.log("appended to", image);
+    }
+};
+
+// get an ID given a metadata response in the form:
+// "https://images-assets.nasa.gov/image/[THE ID]/metadata.json
+function getID(str) {
+    var tmp = str.substr(37);
+    var result = tmp.substr(0, tmp.indexOf("/"));
+    return result;
+}
