@@ -4,15 +4,29 @@
     border-radius: 5px;
 }
 
+.data {
+    background-color: #f2f2f2;
+    border: 1px solid darkslateblue;
+    border-radius: 5px;
+    margin-top: 2px;
+    margin-bottom: 20px;
+    display: none;
+}
+
 .item {
     display: inline-block;
     padding: 5px 5px 5px 5px;
+    border-radius: 5%;
     width: 100%;
     height: auto;
 }
 
 .margins {
     margin: 20px 20px 20px 20px;
+}
+
+.margins_sm {
+    margin: 5px 5px 5px 5px;
 }
 
 .inputs {

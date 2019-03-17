@@ -6,6 +6,12 @@ var url = "";
 var media_type = "&media_type=image"; // restrict results to images only
 var q, desc, loc, year_start, year_end = undefined; // search fields
 
+var $grid = $('.my-grid').masonry({
+    // options
+    itemSelector: '.grid-item',
+    columnWidth: 200
+  });
+
 // formats strings by removing trailing whitespace and replacing internal whitespace
 // with "%20"
 function format(str) {
@@ -69,37 +75,44 @@ search_request.onreadystatechange = function() {
         var jsonObj = JSON.parse(search_request.responseText);
         var length = jsonObj.collection.items.length;
 
-        var $grid = $('.my-grid').masonry({
-            // options
-            itemSelector: '.grid-item',
-            columnWidth: 200
-          });
-
         // appending the images
         for (var i = 0; i < length; ++i) {
-            var width, height;
             var img_src = jsonObj.collection.items[i].links[0].href;    
             var img_id = jsonObj.collection.items[i].data[0].nasa_id;
-            var $item = $("<div class='grid-item'></div>");
+            var title = jsonObj.collection.items[i].data[0].title;
+
+            var $item = $("<div class='grid-item "  + i + "'></div>");
+
             var tag = '<img class="item" id = "' + img_id + '">';
             var image = $(tag);     
             image.attr('src', img_src);
             image.appendTo($item);
+
+            var elem = "<div class='data'><p class='margins_sm'>Title: " + title;
+            elem = elem + "</p></div>";              
+            var img_data = $(elem);
+            img_data.appendTo($item);
+
             $grid.append($item).masonry('appended', $item);
 
             if (i == length-1) {
                 $grid.imagesLoaded().progress( function() {
                     $grid.masonry('layout');
                 });
-                console.log("reloaded!");
             }
             
             // when image is clicked, reveal metadata
-            $(image).on('click', function(){
-                var id = $(this).attr("id");                
-                var url = base_metadata + id;
-                metadata_request.open("GET", url, true);
-                metadata_request.send();
+            $(image).on('click', function(){    
+                console.log("clicked!");
+                var par = $(this).parent();
+                var this_i = $(par).attr('class').split(' ')[1];
+                //$('.' + this_i + ' .collapse').collapse('toggle');
+                $('.' + this_i + ' .data').toggle('slow');
+                $grid.masonry('layout');
+                
+                // var url = base_metadata + id;
+                // metadata_request.open("GET", url, true);
+                // metadata_request.send();
             });    
 
             // when image is hovered
@@ -113,21 +126,22 @@ search_request.onreadystatechange = function() {
 };
 
 // receive the metadata request back
-metadata_request.onreadystatechange = function() {
-    if (metadata_request.readyState == 4 && metadata_request.status == 200) {
-        var jsonObj = JSON.parse(metadata_request.responseText);
-        var location = jsonObj.location;
-        var id = getID(location);
-        // var text = JSON.parse(location);
-        // console.log("text = ", text);
+// metadata_request.onreadystatechange = function() {
+//     if (metadata_request.readyState == 4 && metadata_request.status == 200) {
+//         var jsonObj = JSON.parse(metadata_request.responseText);
+//         var location = jsonObj.location;
+//         var id = getID(location);
+//         // var text = JSON.parse(location);
+//         // console.log("text = ", text);
 
-        var image = $("#" + id);
-        var par = $(image).parent();
-        var item = $("<p>Hello World</p>");
-        $(par).append(item);
-        console.log("appended to", image);
-    }
-};
+//         var image = $("#" + id);
+//         var par = $(image).parent();
+//         var item = $("<div class='data margins_data'><p class='margins_sm'>Hello World</p></div>");
+//         $(par).append(item);
+//         $grid.masonry('layout');
+//         console.log("appended to", image);
+//     }
+// };
 
 // get an ID given a metadata response in the form:
 // "https://images-assets.nasa.gov/image/[THE ID]/metadata.json
