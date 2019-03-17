@@ -69,23 +69,34 @@ search_request.onreadystatechange = function() {
         var jsonObj = JSON.parse(search_request.responseText);
         var length = jsonObj.collection.items.length;
 
+        var $grid = $('.my-grid').masonry({
+            // options
+            itemSelector: '.grid-item',
+            columnWidth: 200
+          });
+
         // appending the images
         for (var i = 0; i < length; ++i) {
-            var img_src = jsonObj.collection.items[i].links[0].href;
+            var width, height;
+            var img_src = jsonObj.collection.items[i].links[0].href;    
             var img_id = jsonObj.collection.items[i].data[0].nasa_id;
-            var item = $("<span></span>");
+            var $item = $("<div class='grid-item'></div>");
             var tag = '<img class="item" id = "' + img_id + '">';
-            var image = $(tag);
+            var image = $(tag);     
             image.attr('src', img_src);
-            image.width(25 + '%');
-            image.height(25 + '%');
-            image.appendTo(item);
-            item.appendTo("#container");
+            image.appendTo($item);
+            $grid.append($item).masonry('appended', $item);
+
+            if (i == length-1) {
+                $grid.imagesLoaded().progress( function() {
+                    $grid.masonry('layout');
+                });
+                console.log("reloaded!");
+            }
             
             // when image is clicked, reveal metadata
             $(image).on('click', function(){
-                var id = $(this).attr("id");
-                
+                var id = $(this).attr("id");                
                 var url = base_metadata + id;
                 metadata_request.open("GET", url, true);
                 metadata_request.send();
@@ -94,10 +105,8 @@ search_request.onreadystatechange = function() {
             // when image is hovered
             $(image).hover(function(){
                 $(this).addClass('borders');
-                $(this).addClass('hover_item');
             }, function(){
                 $(this).removeClass('borders');
-                $(this).removeClass('hover_item');
             }); 
         }
     }
