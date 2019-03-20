@@ -11,6 +11,7 @@ var $grid = $('.my-grid').masonry({
     itemSelector: '.grid-item',
     columnWidth: 200
   });
+var $meta_cont = $('#metadata_container');
 
 // formats strings by removing trailing whitespace and replacing internal whitespace
 // with "%20"
@@ -80,18 +81,28 @@ search_request.onreadystatechange = function() {
             var img_src = jsonObj.collection.items[i].links[0].href;    
             var img_id = jsonObj.collection.items[i].data[0].nasa_id;
             var title = jsonObj.collection.items[i].data[0].title;
+            var img_desc = jsonObj.collection.items[i].data[0].description;
+            var date_created = jsonObj.collection.items[i].data[0].date_created;
 
             var $item = $("<div class='grid-item "  + i + "'></div>");
 
-            var tag = '<img class="item" id = "' + img_id + '">';
+            var tag = '<img class="item ' + img_id + '">';
             var image = $(tag);     
             image.attr('src', img_src);
             image.appendTo($item);
 
-            var elem = "<div class='data'><p class='margins_sm'>Title: " + title;
-            elem = elem + "</p></div>";              
-            var img_data = $(elem);
-            img_data.appendTo($item);
+            var btn = '<button type="button"';
+            btn = btn + ' class="btn btn-outline-secondary btn_sm margins_sm my_btn' + img_id + '">';
+            btn = btn + 'Close</button>';
+
+            var elem = "<div class='data " + img_id + "'>";
+            elem = elem + btn;
+            elem = elem + "<div class='data text'>";
+            elem = elem + "<p class='margins_sm'>Title: " + title + "</p>";
+            elem = elem + "<p class='margins_sm'>Date Created: " + date_created + "</p>";
+            elem = elem + "<p class='margins_sm'>Description: " + img_desc + "</p>";
+            elem = elem + "</div></div>"; 
+            $(elem).appendTo($meta_cont);
 
             $grid.append($item).masonry('appended', $item);
 
@@ -100,19 +111,28 @@ search_request.onreadystatechange = function() {
                     $grid.masonry('layout');
                 });
             }
+
+            $('.metad .data .btn').on('click', function() {
+                console.log("button clicked!");
+                $('.metad').children().hide();
+            });
+
+            $(btn).on('click', function(){
+                console.log("button2 clicked!");
+                $('.metad').children().hide();
+            });
             
             // when image is clicked, reveal metadata
-            $(image).on('click', function(){    
-                console.log("clicked!");
-                var par = $(this).parent();
-                var this_i = $(par).attr('class').split(' ')[1];
-                //$('.' + this_i + ' .collapse').collapse('toggle');
-                $('.' + this_i + ' .data').toggle('slow');
-                $grid.masonry('layout');
-                
-                // var url = base_metadata + id;
-                // metadata_request.open("GET", url, true);
-                // metadata_request.send();
+            $(image).on('click', function(){
+                var this_id = $(this).attr('class').split(' ')[1];
+                var $img_metadata = $('.metad .' + this_id);
+                if ($img_metadata.css('display') == 'none') {
+                    $('.metad').children().hide();
+                    $('.metad .' + this_id).show();
+                } else {
+                    $('.metad').children().hide();
+                }               
+                console.log("toggled -> this_id = ", this_id);
             });    
 
             // when image is hovered

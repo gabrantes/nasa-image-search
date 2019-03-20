@@ -5,12 +5,17 @@
 }
 
 .data {
+    min-width: 720px;
+    width: auto;
+    max-height: 300px;
+    height: auto;
     background-color: #f2f2f2;
     border: 1px solid darkslateblue;
     border-radius: 5px;
     margin-top: 2px;
-    margin-bottom: 20px;
+    margin-bottom: 20px;    
     display: none;
+    position: absolute;    
 }
 
 .item {
@@ -26,7 +31,7 @@
 }
 
 .margins_sm {
-    margin: 5px 5px 5px 5px;
+    margin: 10px 10px 10px 10px;
 }
 
 .inputs {
@@ -40,4 +45,24 @@
     border-radius: 5px;
 }
 
-.grid-item { width: 20%; }
+.grid-item {
+    width: 20%; 
+}
+
+.metad {
+    display: inline-block;
+    position: fixed;
+    top: 20px;
+    left: 300px;
+}
+
+.my_btn {
+    position: absolute;
+    right: 20px;
+}
+
+.text {
+    position: absolute;
+    display: block;
+    overflow: auto;
+}
