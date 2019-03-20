@@ -28,6 +28,7 @@ function format(str) {
 $("#search_btn").click(function() {
     // reset the container and the request url
     $("#container").empty();
+    $("metadata_container").empty();
     url = "";
 
     // retrieve the user input
