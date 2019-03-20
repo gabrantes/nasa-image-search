@@ -145,29 +145,3 @@ search_request.onreadystatechange = function() {
         }
     }
 };
-
-// receive the metadata request back
-// metadata_request.onreadystatechange = function() {
-//     if (metadata_request.readyState == 4 && metadata_request.status == 200) {
-//         var jsonObj = JSON.parse(metadata_request.responseText);
-//         var location = jsonObj.location;
-//         var id = getID(location);
-//         // var text = JSON.parse(location);
-//         // console.log("text = ", text);
-
-//         var image = $("#" + id);
-//         var par = $(image).parent();
-//         var item = $("<div class='data margins_data'><p class='margins_sm'>Hello World</p></div>");
-//         $(par).append(item);
-//         $grid.masonry('layout');
-//         console.log("appended to", image);
-//     }
-// };
-
-// get an ID given a metadata response in the form:
-// "https://images-assets.nasa.gov/image/[THE ID]/metadata.json
-function getID(str) {
-    var tmp = str.substr(37);
-    var result = tmp.substr(0, tmp.indexOf("/"));
-    return result;
-}
